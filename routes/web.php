@@ -17,3 +17,7 @@ Route::get('/', function () {
 
 
 Route::post('/login','ApiController@login');
+
+Route::post('/signup','ApiController@signup');
+
+Route::post('/avatar_change','ApiController@avatar_change');
