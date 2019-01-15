@@ -21,3 +21,11 @@ Route::post('/login','ApiController@login');
 Route::post('/signup','ApiController@signup');
 
 Route::post('/avatar_change','ApiController@avatar_change');
+
+Route::post('/language_change','ApiController@language_change');
+
+Route::post('/get_user_detail','ApiController@get_user_detail');
+
+Route::post('/get_faq','ApiController@get_faq');
+
+Route::get('/get_language','ApiController@get_language');

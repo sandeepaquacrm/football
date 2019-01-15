@@ -140,6 +140,9 @@ class ApiController extends BaseController
             if(!empty($errors->photo)){
               $errMsg[] = $errors->photo[0];
             }
+            if(!empty($errors->userid)){
+              $errMsg[] = $errors->userid[0];
+            }
 
             $responseArray['message'] = implode('<br>',$errMsg);
             $responseArray['status'] = "201";
@@ -162,6 +165,140 @@ class ApiController extends BaseController
               $responseArray['message'] = "profile updated successfully";
               $responseArray['status'] = "200";
               $responseArray['detail'] = array();
+            }
+
+        }
+        echo json_encode($responseArray);
+        exit();
+    }
+
+    public function language_change(Request $request){
+      $this->common = new Common();
+
+      $validator = Validator::make($request->all(), [
+        'er_language' => 'required|max:10',
+        'userid' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+
+            $errors = $validator->errors();
+            $errors = json_decode($errors);
+            $errMsg = array();
+
+            if(!empty($errors->er_language)){
+              $errMsg[] = $errors->er_language[0];
+            }
+            if(!empty($errors->userid)){
+              $errMsg[] = $errors->userid[0];
+            }
+
+            $responseArray['message'] = implode('<br>',$errMsg);
+            $responseArray['status'] = "201";
+            $responseArray['detail'] = array();
+        }else{
+            $allInput = $request->input();
+
+            $arrayPost = array('cr_language'=>$allInput['er_language']);
+            $query = DB::table('football_users')->where('id',$allInput['userid'])->update($arrayPost);
+            if(empty($query)){
+              $responseArray['message'] = "try again";
+              $responseArray['status'] = "201";
+              $responseArray['detail'] = array();
+            }else{
+              $responseArray['message'] = "Language updated successfully";
+              $responseArray['status'] = "200";
+              $responseArray['detail'] = array();
+            }
+
+        }
+        echo json_encode($responseArray);
+        exit();
+    }
+
+    public function get_language(){
+      $this->common = new Common();
+      $query = DB::table('football_language')->select('*')->get();
+
+      $responseArray['message'] = "done";
+      $responseArray['status'] = "200";
+      $responseArray['detail'] = $query;
+
+      echo json_encode($responseArray);
+      exit();
+    }
+
+    public function get_user_detail(Request $request){
+      $this->common = new Common();
+
+      $validator = Validator::make($request->all(), [
+            'userid' => 'numeric|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $errors = json_decode($errors);
+            $errMsg = array();
+
+            if(!empty($errors->userid)){
+              $errMsg[] = $errors->userid[0];
+            }
+
+            $responseArray['message'] = implode('<br>',$errMsg);
+            $responseArray['status'] = "201";
+            $responseArray['detail'] = array();
+        }else{
+          $allInput = $request->input();
+          $arrayPost = array('id'=>$allInput['userid']);
+            $query = DB::table('football_users')->select('*')->where($arrayPost)->first();
+            if(empty($query)){
+              $responseArray['message'] = "user not found";
+              $responseArray['status'] = "201";
+              $responseArray['detail'] = array();
+            }else{
+              $query->profile_image = url("").'/uploads/avatars/'.$query->profile_image;
+
+              $responseArray['message'] = "Done";
+              $responseArray['status'] = "200";
+              $responseArray['detail'] = $query;
+            }
+
+        }
+        echo json_encode($responseArray);
+        exit();
+    }
+
+    public function get_faq(Request $request){
+      $this->common = new Common();
+
+      $validator = Validator::make($request->all(), [
+            'language' => 'string|max:20'
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $errors = json_decode($errors);
+            $errMsg = array();
+
+            if(!empty($errors->language)){
+              $errMsg[] = $errors->language[0];
+            }
+
+            $responseArray['message'] = implode('<br>',$errMsg);
+            $responseArray['status'] = "201";
+            $responseArray['detail'] = array();
+        }else{
+          $allInput = $request->input();
+          $arrayPost = array('lang_localise'=>$allInput['language']);
+            $query = DB::table('football_faqs')->select('*')->where($arrayPost)->first();
+            if(empty($query)){
+              $responseArray['message'] = "No FAQ found";
+              $responseArray['status'] = "201";
+              $responseArray['detail'] = array();
+            }else{
+                          $responseArray['message'] = "Done";
+              $responseArray['status'] = "200";
+              $responseArray['detail'] = $query;
             }
 
         }
